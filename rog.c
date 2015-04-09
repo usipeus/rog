@@ -7,7 +7,7 @@ char* map;
 
 // map related functions
 void draw_map(char* m);
-char* load_map(char* name, int height, int width);
+char* load_map(char* name, int height);
 void replace_with_entities(char* map, int* entities);
 
 // entity related functions
@@ -19,10 +19,15 @@ void game_loop();
 
 // map related functions
 void draw_map(char* m) {
-	
+	for (i = 0; i < (sizeof(m) / sizeof(char); i++)
+    {
+        printf("%c", m[i]);
+        if (i % MAP_LENGTH == 0)
+            printf("\n");
+    }
 }
 
-char* load_map(char* name, int height, int width) {
+char* load_map(char* name, int height) {
 
 }
 
