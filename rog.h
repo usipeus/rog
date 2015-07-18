@@ -1,18 +1,25 @@
-#ifndef MAP_WIDTH
-#define MAP_WIDTH 80
-#endif
+struct entity {
+	char tile;
+	int location;
+}
 
-#ifndef MAP_HEIGHT
-#define MAP_HEIGHT 25
-#endif
+// map related functions
+void draw_map(char * map);
+char * load_map(char * name, uint16_t height);
+void replace_with_entities(char * map, struct entity * entities);
 
-#define D_UP (-MAP_WIDTH)
-#define D_UL (-MAP_WIDTH - 1)
-#define D_UR (-MAP_WIDTH + 1)
+// entity related functions
+uint32_t * add_entity(struct entity * entities);
+uint32_t * del_entity(struct entity * entities);
+uint32_t * move_entity(struct entity * entities, uint32_t id, uint16_t dir);
 
-#define D_LE (-1)
-#define D_RI (1)
 
-#define D_DN (MAP_WIDTH)
-#define D_DL (MAP_WIDTH - 1)
-#define D_DR (MAP_WIDTH + 1)
+void draw_map(char * m) {
+	uint32_t i;
+	// print each character
+	for (i = 0; i < (strlen(m)); i++) {
+		printf("%c", m[i]);
+		if ((i + 1) % MAP_WIDTH == 0)
+			printf("\n");
+	}
+}
