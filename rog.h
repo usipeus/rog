@@ -1,25 +1,39 @@
-struct entity {
-	char tile;
-	int location;
-}
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+	unsigned int width;
+	unsigned int height;
+	char * map;
+	char * characters;
+	unsigned int * locations;
+} map;
 
 // map related functions
-void draw_map(char * map);
-char * load_map(char * name, uint16_t height);
-void replace_with_entities(char * map, struct entity * entities);
+void draw_map(map m);
+map * load_map();
 
 // entity related functions
-uint32_t * add_entity(struct entity * entities);
-uint32_t * del_entity(struct entity * entities);
-uint32_t * move_entity(struct entity * entities, uint32_t id, uint16_t dir);
+void add_character();
+void del_character();
+void move_character();
 
+void draw_map(map m) {
+	unsigned int i, j;
+	char to_print;
+	for (i = 0; i < strlen(m.map); i++) {
+		for (j = 0; j < strlen(m.characters); j++) {
+			if (m.locations[j] == i)
+				to_print = m.characters[j];
+			else
+				to_print = m.map[i];
+		}
 
-void draw_map(char * m) {
-	uint32_t i;
-	// print each character
-	for (i = 0; i < (strlen(m)); i++) {
-		printf("%c", m[i]);
-		if ((i + 1) % MAP_WIDTH == 0)
+		printf("%c", to_print);
+
+		if ((i + 1) % m.width == 0)
 			printf("\n");
 	}
 }

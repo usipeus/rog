@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "rog.h"
 
 // game functions
@@ -18,9 +13,20 @@ int main(int argc, char * argv[]) {
 }
 
 void game_setup() {
+	map m;
+	m.height = 4;
+	m.width = 4;
+	m.map = malloc((m.height * m.width + 1) * sizeof(char));
+	strcpy(m.map, "#####..##..#####");
+	m.characters = malloc(2 * sizeof(char));
+	strcpy(m.characters, "@a");
+	m.locations = malloc(2 * sizeof(int));
+	m.locations[0] = 5;
+	m.locations[1] = 9;
 
+	draw_map(m);
 }
 
 void game_loop() {
-	
+
 }
