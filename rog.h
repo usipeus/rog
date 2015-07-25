@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,29 +10,49 @@ typedef struct {
 	unsigned int * locations;
 } map;
 
-// map related functions
-void draw_map(map m);
-map * load_map();
+/* map related functions */
+void
+draw_map (map m);
 
-// entity related functions
-void add_character();
-void del_character();
-void move_character();
+map *
+load_map ();
 
-void draw_map(map m) {
+/* character related functions */
+void
+add_character (map m,
+	       char tile,
+	       unsigned int location);
+
+void
+del_character ();
+
+void
+move_character ();
+
+/* function definitions */
+
+void
+draw_map (map m)
+{
 	unsigned int i, j;
 	char to_print;
-	for (i = 0; i < strlen(m.map); i++) {
-		for (j = 0; j < strlen(m.characters); j++) {
+	for (i = 0; i < strlen (m.map); i++)
+	{
+		for (j = 0; j < sizeof (m.locations) / sizeof (*(m.locations)); j++)
+		{
 			if (m.locations[j] == i)
+			{
 				to_print = m.characters[j];
+			}
 			else
+			{
 				to_print = m.map[i];
+			}
 		}
 
-		printf("%c", to_print);
+		printf ("%c", to_print);
 
 		if ((i + 1) % m.width == 0)
-			printf("\n");
+			printf ("\n");
 	}
 }
