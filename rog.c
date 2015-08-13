@@ -20,14 +20,18 @@ game_setup()
 	m.width = 4;
 	m.map = malloc ((m.height * m.width + 1) * sizeof (char));
 	strcpy (m.map, "#####..##..#####");
-	m.characters = malloc (5 * sizeof (char));
-	strcpy (m.characters, "@aDc");
-	m.locations = malloc(4 * sizeof (unsigned int));
+	m.characters = malloc (3 * sizeof (char));
+	strcpy (m.characters, "@a");
+	m.locations = malloc(2 * sizeof (unsigned int));
 	(m.locations)[0] = 5;
 	(m.locations)[1] = 9;
-	(m.locations)[2] = 10;
-	(m.locations)[3] = 6;
+	
+	add_character (&m, "i", 10);
 
+	draw_map (&m);
+	
+	move_character (&m, 0, 1);
+	
 	draw_map (&m);
 
 	free (m.map);
