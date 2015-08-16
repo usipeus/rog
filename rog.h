@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,42 +30,42 @@ typedef struct {
 
 /* map related functions */
 void
-draw_map (map * m);
+draw_map(map * m);
 
 map *
-load_map (FILE * file);
+load_map(FILE * file);
 
 /* character related functions */
 void
-add_character (map * m, char * tile, unsigned int loc);
+add_character(map * m, char * tile, unsigned int loc);
 
 void
-del_character (map * m, unsigned int id);
+del_character(map * m, unsigned int id);
 
 void
-move_character (map * m, unsigned int id, int dir);
+move_character(map * m, unsigned int id, int dir);
 
 /* function definitions */
 
 void
-draw_map (map * m)
+draw_map(map * m)
 {
 	unsigned int i, j;
-	char * map_with_chars = malloc (strlen (m->map) * sizeof (char) + 1);
-	strcpy (map_with_chars, m->map);
+	char * map_with_chars = malloc(strlen(m->map) * sizeof(char) + 1);
+	strcpy(map_with_chars, m->map);
 
-	for (i = 0; i < strlen (m->characters); i++)
+	for (i = 0; i < strlen(m->characters); i++)
 	{
 		map_with_chars[(m->locations)[i]] = (m->characters)[i];
 	}
 
-	for (j = 0; j < strlen (map_with_chars); j++)
+	for (j = 0; j < strlen(map_with_chars); j++)
 	{
-		printf ("%c", map_with_chars[j]);
+		printf("%c", map_with_chars[j]);
 
 		if ((j + 1) % m->width == 0)
 		{
-			printf ("\n");
+			printf("\n");
 		}
 	}
 
@@ -72,19 +73,19 @@ draw_map (map * m)
 }
 
 void
-add_character (map * m, char * tile, unsigned int loc)
+add_character(map * m, char * tile, unsigned int loc)
 {
 
 }
 
 void
-del_character (map * m, unsigned int id)
+del_character(map * m, unsigned int id)
 {
 
 }
 
 void
-move_character (map * m, unsigned int id, int dir)
+move_character(map * m, unsigned int id, int dir)
 {
 
 }
