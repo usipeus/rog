@@ -1,6 +1,8 @@
 #include "rog.h"
 
+/* initialization */
 void game_setup();
+/* game logic, combat */
 void game_loop();
 
 int
@@ -15,28 +17,12 @@ main()
 void
 game_setup()
 {
-	map m;
-	m.height = 4;
-	m.width = 4;
-	m.map = malloc((m.height * m.width + 1) * sizeof(char));
-	strcpy(m.map, "#####..##..#####");
-	m.characters = malloc (3 * sizeof(char));
-	strcpy(m.characters, "@a");
-	m.locations = malloc(2 * sizeof(unsigned int));
-	(m.locations)[0] = 5;
-	(m.locations)[1] = 9;
-	
-	add_character(&m, "i", 10);
+	Player player = {.hp = 10, .mana = 4, .location = 6, .speed = 2};
+	Map * m = Map_create(4, 4, "#####..##..#####", player);
 
-	draw_map(&m);
-	
-	move_character(&m, 0, 1);
-	
-	draw_map(&m);
+	Map_draw(m);
 
-	free (m.map);
-	free (m.characters);
-	free (m.locations);
+	free(m);
 }
 
 void

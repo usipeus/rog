@@ -1,5 +1,4 @@
-#include <assert.h>
-#include <errno.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,6 +10,7 @@ typedef struct {
 	bool blank;
 	unsigned int hp;
 	unsigned int location;
+	char tile;
 } Enemy;
 
 typedef struct {
@@ -24,42 +24,73 @@ typedef struct {
 	unsigned int width;
 	unsigned int height;
 	char map[MAX_MAPSIZE + 1]; /* MAX_MAPSIZE tiles + '\0' */
-	Enemy enemies[MAX_CHARS];
+	Enemy enemies[MAX_ENEMIES];
 	Player player;
 } Map;
 
 /* map related functions */
-void
-draw_map(map * m);
-
-map *
-load_map(FILE * file);
-
-/* character related functions */
-void
-add_character(map * m, char * tile, unsigned int loc);
+Map *
+Map_create(int width, int height, char * map, Player player);
 
 void
-del_character(map * m, unsigned int id);
+Map_draw(Map * m);
 
+/* combat functions */
 void
-move_character(map * m, unsigned int id, int dir);
+Combat_damage(unsigned int id, int damage);
 
 /* function definitions */
-
-void
-draw_map(map * m)
+Map *
+Map_create(int width, int height, char * map, Player player)
 {
-	unsigned int i, j;
-	char * map_with_chars = malloc(strlen(m->map) * sizeof(char) + 1);
-	strcpy(map_with_chars, m->map);
+	int i = 0;
 
-	for (i = 0; i < strlen(m->characters); i++)
-	{
-		map_with_chars[(m->locations)[i]] = (m->characters)[i];
+	Map * m = malloc(sizeof(Map));
+
+	/* initialize enemies, all blank */
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		Enemy e = {.blank = true};
+		m->enemies[i] = e;
 	}
 
-	for (j = 0; j < strlen(map_with_chars); j++)
+	/* set player */
+	m->player = player;
+
+	/* set width and height */
+	m->width = width;
+	m->height = height;
+
+	/* set map */
+	char * trunc_map = malloc(sizeof(char) * (1 + width * height));
+	// truncate map string
+	strcpy(trunc_map, map);
+	trunc_map[width * height] = '\0';
+	// copy it over
+	strcpy(m->map, trunc_map);
+
+	free(trunc_map);
+	return m;
+}
+
+void
+Map_draw(Map * m)
+{
+	unsigned int i, j;
+	int area = m->width * m->height;
+	char * map_with_chars = malloc(area + 1);
+	strcpy(map_with_chars, m->map);
+	map_with_chars[area] = '\0';
+
+	for (i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (!m->enemies[i].blank) {
+			map_with_chars[m->enemies[i].location] = m->enemies[i].tile;
+		}
+
+		map_with_chars[m->player.location] = '@';
+	}
+
+	for (j = 0; j < area; j++)
 	{
 		printf("%c", map_with_chars[j]);
 
@@ -70,22 +101,4 @@ draw_map(map * m)
 	}
 
 	free(map_with_chars);
-}
-
-void
-add_character(map * m, char * tile, unsigned int loc)
-{
-
-}
-
-void
-del_character(map * m, unsigned int id)
-{
-
-}
-
-void
-move_character(map * m, unsigned int id, int dir)
-{
-
 }
