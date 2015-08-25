@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,6 +44,9 @@ Combat_damage(unsigned int id, int damage);
 Map *
 Map_create(int width, int height, char * map, Player player)
 {
+	assert (width <= 80);
+	assert (height <= 25);
+
 	int i = 0;
 
 	Map * m = malloc(sizeof(Map));
