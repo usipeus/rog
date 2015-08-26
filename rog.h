@@ -36,11 +36,59 @@ Map_create(int width, int height, char * map, Player player);
 void
 Map_draw(Map * m);
 
+/* enemy functions */
+int
+Enemy_getid(Map * m, unsigned int id);
+
+void
+Enemy_delete(Map * m, unsigned int location);
+
+void
+Enemy_add(Map * m, Enemy e, unsigned int location);
+
 /* combat functions */
 void
-Combat_damage(unsigned int id, int damage);
+Combat_damage(Map * m, unsigned int id, int dmg);
 
 /* function definitions */
+int
+Enemy_getid(Map * m, unsigned int location)
+{
+	/* find id using linear search; if id doesn't exist, return -1 */
+	int i, id = -1;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		if (m->enemies[i].location == location) {
+			id = i;
+			break;
+		}
+	}
+
+	return id;
+}
+
+void
+Enemy_delete(Map * m, unsigned int location)
+{
+	int id = Enemy_getid(m, location);
+	/* set that enemy to blank */
+	if (id != -1) {
+		Enemy e = {.blank = true};
+		m->enemies[id] = e;
+	}
+}
+
+void
+Combat_damage(Map * m, unsigned int location, int dmg)
+{
+	int id = Enemy_getid(m, location);
+	m->enemies[id].hp -= dmg;
+
+	/* check if dead */
+	if (m->enemies[id].hp <= 0) {
+		Enemy_delete(m, id);
+	}
+}
+
 Map *
 Map_create(int width, int height, char * map, Player player)
 {
@@ -66,10 +114,10 @@ Map_create(int width, int height, char * map, Player player)
 
 	/* set map */
 	char * trunc_map = malloc(sizeof(char) * (1 + width * height));
-	// truncate map string
+	/* truncate map string */
 	strcpy(trunc_map, map);
 	trunc_map[width * height] = '\0';
-	// copy it over
+	/* copy it over */
 	strcpy(m->map, trunc_map);
 
 	free(trunc_map);
