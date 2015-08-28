@@ -29,28 +29,28 @@ typedef struct {
 	Player player;
 } Map;
 
-/* map related functions */
-Map *
-Map_create(int width, int height, char * map, Player player);
-
-void
-Map_draw(Map * m);
-
-/* enemy functions */
-int
-Enemy_getid(Map * m, unsigned int id);
-
-void
-Enemy_delete(Map * m, unsigned int location);
-
-void
-Enemy_add(Map * m, Enemy e, unsigned int location);
-
-/* combat functions */
-void
-Combat_damage(Map * m, unsigned int id, int dmg);
-
 /* function definitions */
+void
+Enemy_add(Map * m, Enemy e)
+{
+	int i;
+	unsigned int first_blank = -1;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		/* find first blank spot */
+		if (m->enemies[i].blank) {
+			first_blank = i;
+			break;
+		}
+	}
+
+	m->enemies[first_blank] = e;
+
+	/* error: first_blank is -1 if no blank slots */
+	if (first_blank == -1) {
+		/* print error */
+	}
+}
+
 int
 Enemy_getid(Map * m, unsigned int location)
 {
