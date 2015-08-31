@@ -1,20 +1,20 @@
 #include "rog.h"
 
 /* initialization */
-void game_setup();
+Map * game_setup();
 /* game logic, combat */
 void game_loop();
 
 int
 main()
 {
-	game_setup();
-	game_loop();
+	Map * m = game_setup();
+	game_loop(m);
 
 	return 0;
 }
 
-void
+Map *
 game_setup()
 {
 	Player player = {.hp = 10, .mana = 4, .location = 6, .speed = 2};
@@ -23,6 +23,12 @@ game_setup()
 	Enemy enemy1 = {.blank = false, .hp = 4, .location = 5, .tile = 'D'};
 	Enemy_add(m, enemy1);
 
+	return m;
+}
+
+void
+game_loop(Map * m)
+{
 	Map_draw(m);
 
 	Combat_damage(m, 5, 5);
@@ -30,10 +36,4 @@ game_setup()
 	Map_draw(m);
 
 	free(m);
-}
-
-void
-game_loop()
-{
-
 }
