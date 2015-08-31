@@ -67,9 +67,8 @@ Enemy_getid(Map * m, unsigned int location)
 }
 
 void
-Enemy_delete(Map * m, unsigned int location)
+Enemy_delete(Map * m, unsigned int id)
 {
-	int id = Enemy_getid(m, location);
 	/* set that enemy to blank */
 	if (id != -1) {
 		Enemy e = {.blank = true};
@@ -78,14 +77,30 @@ Enemy_delete(Map * m, unsigned int location)
 }
 
 void
+Enemy_status(Map * m, unsigned int id)
+{
+	printf("tile:%c\t id: %i\t hp: %i\t loc: %i\n",
+			m->enemies[id].tile,
+			id,
+			m->enemies[id].hp,
+			m->enemies[id].location);
+}
+
+void
 Combat_damage(Map * m, unsigned int location, int dmg)
 {
 	int id = Enemy_getid(m, location);
-	m->enemies[id].hp -= dmg;
 
-	/* check if dead */
-	if (m->enemies[id].hp <= 0) {
-		Enemy_delete(m, id);
+	if (id == -1) {
+		/* error, enemy not found */
+	} else {
+		/* delete if dead, else subtract from hp */
+		if (m->enemies[id].hp <= dmg) {
+			Enemy_delete(m, id);
+		} else {
+			m->enemies[id].hp -= dmg;
+		}
+
 	}
 }
 

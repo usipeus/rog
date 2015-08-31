@@ -25,7 +25,7 @@ game_setup()
 
 	Map_draw(m);
 
-	Enemy_delete(m, 5);
+	Combat_damage(m, 5, 5);
 
 	Map_draw(m);
 
