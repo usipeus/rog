@@ -100,7 +100,6 @@ Combat_damage(Map * m, unsigned int location, int dmg)
 		} else {
 			m->enemies[id].hp -= dmg;
 		}
-
 	}
 }
 
