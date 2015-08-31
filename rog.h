@@ -77,17 +77,17 @@ Enemy_delete(Map * m, unsigned int id)
 }
 
 void
-Enemy_status(Map * m, unsigned int id)
+Enemy_status(Enemy e, int id)
 {
 	printf("tile:%c\t id: %i\t hp: %i\t loc: %i\n",
-			m->enemies[id].tile,
+			e.tile,
 			id,
-			m->enemies[id].hp,
-			m->enemies[id].location);
+			e.hp,
+			e.location);
 }
 
 void
-Combat_damage(Map * m, unsigned int location, int dmg)
+Combat_damage_enemy(Map * m, unsigned int location, int dmg)
 {
 	int id = Enemy_getid(m, location);
 
@@ -100,6 +100,17 @@ Combat_damage(Map * m, unsigned int location, int dmg)
 		} else {
 			m->enemies[id].hp -= dmg;
 		}
+	}
+}
+
+void
+Combat_damage_player(Map * m, int dmg)
+{
+	/* delete if dead, else subtract from hp */
+	if (m->player.hp <= dmg) {
+		/* game over */
+	} else {
+		m->player.hp -= dmg;
 	}
 }
 
@@ -167,4 +178,14 @@ Map_draw(Map * m)
 	}
 
 	free(map_with_chars);
+}
+
+void
+Player_status(Player p)
+{
+	printf("Player\thp: %u\tmana: %u\tlocation: %u\tspeed: %u\n",
+			p.hp,
+			p.mana,
+			p.location,
+			p.speed);
 }

@@ -31,9 +31,13 @@ game_loop(Map * m)
 {
 	Map_draw(m);
 
-	Combat_damage(m, 5, 5);
+	Combat_damage_enemy(m, 5, 5);
 
 	Map_draw(m);
+
+	Player_status(m->player);
+	Combat_damage_player(m, 3);
+	Player_status(m->player);
 
 	free(m);
 }
