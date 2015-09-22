@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +7,7 @@
 #define MAX_ENEMIES 256
 
 typedef struct {
-	bool blank;
+	int blank;
 	unsigned int hp;
 	unsigned int location;
 	char tile;
@@ -71,7 +70,7 @@ Enemy_delete(Map * m, unsigned int id)
 {
 	/* set that enemy to blank */
 	if (id != -1) {
-		Enemy e = {.blank = true};
+		Enemy e = {.blank = 1};
 		m->enemies[id] = e;
 	}
 }
@@ -126,7 +125,7 @@ Map_create(int width, int height, char * map, Player player)
 
 	/* initialize enemies, all blank */
 	for (i = 0; i < MAX_ENEMIES; i++) {
-		Enemy e = {.blank = true};
+		Enemy e = {.blank = 1};
 		m->enemies[i] = e;
 	}
 
