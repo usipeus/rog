@@ -3,7 +3,7 @@
 /* initialization */
 Map * game_setup();
 /* game logic, combat */
-void game_loop();
+void game_loop(Map * m);
 
 int
 main()
@@ -20,7 +20,7 @@ game_setup()
 	Player player = {.hp = 10, .mana = 4, .location = 6, .speed = 2};
 	Map * m = Map_create(4, 4, "#####..##..#####", player);
 
-	Enemy enemy1 = {.blank = 1, .hp = 4, .location = 5, .tile = 'D'};
+	Enemy enemy1 = {.blank = 0, .hp = 4, .location = 5, .tile = 'D'};
 	Enemy_add(m, enemy1);
 
 	return m;

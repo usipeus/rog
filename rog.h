@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +8,7 @@
 #define MAX_ENEMIES 256
 
 typedef struct {
-	int blank;
+	unsigned int blank;
 	unsigned int hp;
 	unsigned int location;
 	char tile;
@@ -36,7 +37,7 @@ Enemy_add(Map * m, Enemy e)
 	unsigned int first_blank = -1;
 	for (i = 0; i < MAX_ENEMIES; i++) {
 		/* find first blank spot */
-		if (m->enemies[i].blank) {
+		if (m->enemies[i].blank == 1) {
 			first_blank = i;
 			break;
 		}
@@ -157,10 +158,13 @@ Map_draw(Map * m)
 	strcpy(map_with_chars, m->map);
 	map_with_chars[area] = '\0';
 
+	clear();
+
 	for (i = 0; i < MAX_ENEMIES; i++)
 	{
-		if (!m->enemies[i].blank) {
-			map_with_chars[m->enemies[i].location] = m->enemies[i].tile;
+		if (m->enemies[i].blank == 0) {
+			map_with_chars[m->enemies[i].location] =
+				m->enemies[i].tile;
 		}
 
 		map_with_chars[m->player.location] = '@';
