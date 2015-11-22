@@ -7,6 +7,18 @@
 #define MAX_MAPSIZE 80 * 25
 #define MAX_ENEMIES 256
 
+enum directions {
+  UP_LEFT,
+  UP,
+  UP_RIGHT,
+  LEFT,
+  IN_PLACE,
+  RIGHT,
+  DOWN_LEFT,
+  DOWN,
+  DOWN_RIGHT
+};
+
 typedef struct {
 	unsigned int blank;
 	unsigned int hp;
@@ -112,6 +124,54 @@ Combat_damage_player(Map * m, int dmg)
 	} else {
 		m->player.hp -= dmg;
 	}
+}
+
+void
+Movement_player(Map * map, enum directions dir)
+{
+  int offset = 0;
+
+  switch (dir) {
+    case DOWN_LEFT:
+      offset = map->width - 1;
+      break;
+    
+    case DOWN:
+      offset = map->width;
+      break;
+    
+    case DOWN_RIGHT:
+      offset = map->width + 1;
+      break;
+    
+    case LEFT:
+      offset = -1;
+      break;
+
+    case IN_PLACE:
+      offset = 0;
+      break;
+    
+    case RIGHT:
+      offset = 1;
+      break;
+
+    case UP_LEFT:
+      offset = -map->width - 1;
+      break;
+    
+    case UP:
+      offset = -map->width;
+      break;
+    
+    case UP_RIGHT:
+      offset = -map->width + 1;
+      break;
+  }
+  
+  if (map->map[map->player.location + offset] == '.') {
+    map->player.location += offset;
+  }
 }
 
 Map *
