@@ -168,8 +168,10 @@ Movement_player(Map * map, enum directions dir)
       offset = -map->width + 1;
       break;
   }
-  
-  if (map->map[map->player.location + offset] == '.') {
+
+	char new_loc = map->map[map->player.location + offset];
+
+  if (new_loc == '.') {
     map->player.location += offset;
   }
 }
@@ -177,8 +179,8 @@ Movement_player(Map * map, enum directions dir)
 Map *
 Map_create(int width, int height, char * map, Player player)
 {
-	assert (width <= 80);
-	assert (height <= 25);
+  assert (width <= 80);
+  assert (height <= 25);
 
 	int i = 0;
 
