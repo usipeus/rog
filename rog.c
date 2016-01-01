@@ -39,17 +39,17 @@ game_loop(Map * m)
 	Combat_damage_player(m, 3);
 	Player_status(m->player);
 
-  Movement_player(m, DOWN_LEFT);
-  Map_draw(m);
+	Movement_player(m, DOWN_LEFT);
+	Map_draw(m);
 
-  Movement_player(m, DOWN_LEFT);
-  Map_draw(m);
-  
-  Movement_player(m, UP);
-  Map_draw(m);
+	Movement_player(m, DOWN_LEFT);
+	Map_draw(m);
 
-  Movement_player(m, DOWN_RIGHT);
-  Map_draw(m);
+	Movement_player(m, UP);
+	Map_draw(m);
+
+	Movement_player(m, DOWN_RIGHT);
+	Map_draw(m);
 
 	free(m);
 }
