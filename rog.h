@@ -46,12 +46,17 @@ typedef struct {
 	Player player;
 } Map;
 
-/* initialization */
+/* game initialization */
 Map *
 game_setup();
-/* game logic, combat */
+
+/* game logic */
 void
 game_loop(Map * m);
+
+/* player input */
+void
+interpret_input(Map * m, char ch);
 
 /* player functions */
 void
