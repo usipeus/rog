@@ -70,7 +70,7 @@ game_loop(Map * m)
 	while (1)
 	{
 		ch = getch();
-		if (ch == 'Q') {
+		if (ch == 'q') {
 			printw("Are you sure you want to quit? (y/N) ");
 			refresh();
 			ch = getch();
