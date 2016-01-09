@@ -1,19 +1,14 @@
+#pragma once
+
 #include <assert.h>
 #include <ncurses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef MAX_ENEMIES
 #define MAX_ENEMIES 256
-#endif /* MAX_ENEMIES */
 
-#ifndef MAX_MAPSIZE
 #define MAX_MAPSIZE 80 * 25
-#endif /* MAX_MAPSIZE */
-
-#ifndef MAP_H_INCLUDED
-#define MAP_H_INCLUDED
 
 enum directions {
 	UP_LEFT,
@@ -58,11 +53,17 @@ Combat_damage_player(Map * m, int dmg);
 void
 Enemy_add(Map * m, Enemy e);
 
+void
+Enemy_delete(Map * m, unsigned int id);
+
 int
 Enemy_getid(Map * m, unsigned int location);
 
 void
-Enemy_delete(Map * m, unsigned int id);
+Enemy_move(Map * m, Enemy e, enum directions dir);
+
+void
+Enemy_status(Enemy e, int id);
 
 void
 Player_status(Player p);
@@ -70,13 +71,9 @@ Player_status(Player p);
 void
 Player_move(Map * m, enum directions dir);
 
-void
-Enemy_status(Enemy e, int id);
-
 Map *
 Map_create(int width, int height, char * map, Player player);
 
 void
 Map_draw(Map * m);
 
-#endif /* MAP_H_INCLUDED */

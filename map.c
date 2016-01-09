@@ -1,5 +1,117 @@
 #include "map.h"
 
+Map *
+Map_create(int width, int height, char * map, Player player)
+{
+	assert (width <= 80);
+	assert (height <= 25);
+
+	int i = 0;
+
+	Map * m = malloc(sizeof(Map));
+
+	/* initialize enemies, all blank */
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		Enemy e = {.blank = 1};
+		m->enemies[i] = e;
+	}
+
+	/* set player */
+	m->player = player;
+
+	/* set width and height */
+	m->width = width;
+	m->height = height;
+
+	/* set map */
+	char trunc_map[sizeof(char) * (1 + width * height)];
+	/* truncate map string */
+	strcpy(trunc_map, map);
+	trunc_map[width * height] = '\0';
+	/* copy it over */
+	strcpy(m->map, trunc_map);
+
+	return m;
+}
+
+void
+Map_draw(Map * m)
+{
+	unsigned int i, j;
+	int area = m->width * m->height;
+	char map_with_chars[area + 1];
+	strcpy(map_with_chars, m->map);
+	map_with_chars[area] = '\0';
+
+	for (i = 0; i < MAX_ENEMIES; i++)
+	{
+		if (m->enemies[i].blank == 0) {
+			map_with_chars[m->enemies[i].location] =
+				m->enemies[i].tile;
+		}
+
+		map_with_chars[m->player.location] = '@';
+	}
+
+	/* print the map to the screen, character by character */
+	for (j = 0; j < area; j++)
+	{
+		addch(map_with_chars[j]);
+
+		if ((j + 1) % m->width == 0)
+		{
+			addch('\n');
+		}
+	}
+
+}
+
+int
+Map_offset(Map * m, enum directions dir)
+{
+	int offset = 0;
+
+	switch (dir) {
+		case DOWN_LEFT:
+			offset = m->width - 1;
+			break;
+
+		case DOWN:
+			offset = m->width;
+			break;
+
+		case DOWN_RIGHT:
+			offset = m->width + 1;
+			break;
+
+		case LEFT:
+			offset = -1;
+			break;
+
+		case IN_PLACE:
+			offset = 0;
+			break;
+
+		case RIGHT:
+			offset = 1;
+			break;
+
+		case UP_LEFT:
+			offset = -m->width - 1;
+			break;
+
+		case UP:
+			offset = -m->width;
+			break;
+
+		case UP_RIGHT:
+			offset = -m->width + 1;
+			break;
+	}
+
+	return offset;
+}
+
 void
 Combat_damage_enemy(Map * m, unsigned int location, int dmg)
 {
@@ -75,6 +187,27 @@ Enemy_delete(Map * m, unsigned int id)
 }
 
 void
+Enemy_move(Map * m, Enemy e, enum directions dir)
+{
+	int offset = Map_offset(m, dir);
+
+	/* find what is in the tile to move into */
+	char new_loc = m->map[e.location + offset];
+
+	if (new_loc == '#' || new_loc == ' ') {
+		/* new_loc is a wall or out of bounds: don't move and display message */
+	} else if (new_loc >= 'a' && new_loc - 'a' < 26) {
+		/* new_loc is another enemy: can't move */
+	} else if (new_loc >= 'A' && new_loc - 'A' < 26) {
+		/* new_loc is another enemy: can't move */
+	} else if (new_loc == '@') {
+		/* new_loc is the player: attack */
+	} else {
+		e.location += offset;
+	}
+}
+
+void
 Enemy_status(Enemy e, int id)
 {
 	printf("tile:%c\t id: %i\t hp: %i\t loc: %i\n",
@@ -95,45 +228,7 @@ Player_status(Player p)
 void
 Player_move(Map * m, enum directions dir)
 {
-	int offset = 0;
-
-	switch (dir) {
-		case DOWN_LEFT:
-			offset = m->width - 1;
-			break;
-
-		case DOWN:
-			offset = m->width;
-			break;
-
-		case DOWN_RIGHT:
-			offset = m->width + 1;
-			break;
-
-		case LEFT:
-			offset = -1;
-			break;
-
-		case IN_PLACE:
-			offset = 0;
-			break;
-
-		case RIGHT:
-			offset = 1;
-			break;
-
-		case UP_LEFT:
-			offset = -m->width - 1;
-			break;
-
-		case UP:
-			offset = -m->width;
-			break;
-
-		case UP_RIGHT:
-			offset = -m->width + 1;
-			break;
-	}
+	int offset = Map_offset(m, dir);
 
 	/* find what is in the tile to move into */
 	char new_loc = m->map[m->player.location + offset];
@@ -146,71 +241,6 @@ Player_move(Map * m, enum directions dir)
 		/* new_loc is an enemy: attack */
 	} else {
 		m->player.location += offset;
-	}
-}
-
-Map *
-Map_create(int width, int height, char * map, Player player)
-{
-	assert (width <= 80);
-	assert (height <= 25);
-
-	int i = 0;
-
-	Map * m = malloc(sizeof(Map));
-
-	/* initialize enemies, all blank */
-	for (i = 0; i < MAX_ENEMIES; i++) {
-		Enemy e = {.blank = 1};
-		m->enemies[i] = e;
-	}
-
-	/* set player */
-	m->player = player;
-
-	/* set width and height */
-	m->width = width;
-	m->height = height;
-
-	/* set map */
-	char trunc_map[sizeof(char) * (1 + width * height)];
-	/* truncate map string */
-	strcpy(trunc_map, map);
-	trunc_map[width * height] = '\0';
-	/* copy it over */
-	strcpy(m->map, trunc_map);
-
-	return m;
-}
-
-void
-Map_draw(Map * m)
-{
-	unsigned int i, j;
-	int area = m->width * m->height;
-	char map_with_chars[area + 1];
-	strcpy(map_with_chars, m->map);
-	map_with_chars[area] = '\0';
-
-	for (i = 0; i < MAX_ENEMIES; i++)
-	{
-		if (m->enemies[i].blank == 0) {
-			map_with_chars[m->enemies[i].location] =
-				m->enemies[i].tile;
-		}
-
-		map_with_chars[m->player.location] = '@';
-	}
-
-	/* print the map to the screen, character by character */
-	for (j = 0; j < area; j++)
-	{
-		addch(map_with_chars[j]);
-
-		if ((j + 1) % m->width == 0)
-		{
-			addch('\n');
-		}
 	}
 
 }

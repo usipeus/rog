@@ -3,7 +3,7 @@
 int
 main()
 {
-	int rows, cols;
+	unsigned int rows, cols;
 	/* initialize ncurses stuff */
 	initscr();
 	noecho();
@@ -65,6 +65,7 @@ game_setup()
 void
 game_loop(Map * m)
 {
+	unsigned int turns = 0;
 	char ch;
 
 	while (1)
@@ -82,8 +83,15 @@ game_loop(Map * m)
 			interpret_input(m, ch);
 			clear();
 			Map_draw(m);
+			printw("Turns: %d\n", turns);
 			refresh();
 		}
+
+		if (turns % 2 == 0) {
+			Enemy_move(m, m->enemies[0], LEFT);
+		}
+
+		turns++;
 	}
 }
 
