@@ -1,17 +1,15 @@
 #include "map.h"
 
 Map *
-Map_create(int width, int height, char * map, Player player)
+Map_create(uint8_t width, uint8_t height, char * map, Player player)
 {
 	assert (width <= 80);
 	assert (height <= 25);
 
-	int i = 0;
-
 	Map * m = malloc(sizeof(Map));
 
 	/* initialize enemies, all blank */
-	for (i = 0; i < MAX_ENEMIES; i++) {
+	for (uint16_t i = 0; i < MAX_ENEMIES; i++) {
 		Enemy e = {.blank = 1};
 		m->enemies[i] = e;
 	}
@@ -37,13 +35,12 @@ Map_create(int width, int height, char * map, Player player)
 void
 Map_draw(Map * m)
 {
-	unsigned int i, j;
-	int area = m->width * m->height;
+	uint16_t area = m->width * m->height;
 	char map_with_chars[area + 1];
 	strcpy(map_with_chars, m->map);
 	map_with_chars[area] = '\0';
 
-	for (i = 0; i < MAX_ENEMIES; i++)
+	for (uint16_t i = 0; i < MAX_ENEMIES; i++)
 	{
 		if (m->enemies[i].blank == 0) {
 			map_with_chars[m->enemies[i].location] =
@@ -54,7 +51,7 @@ Map_draw(Map * m)
 	}
 
 	/* print the map to the screen, character by character */
-	for (j = 0; j < area; j++)
+	for (uint16_t j = 0; j < area; j++)
 	{
 		addch(map_with_chars[j]);
 
@@ -66,10 +63,10 @@ Map_draw(Map * m)
 
 }
 
-int
+int16_t
 Map_offset(Map * m, enum directions dir)
 {
-	int offset = 0;
+	int16_t offset = 0;
 
 	switch (dir) {
 		case DOWN_LEFT:
@@ -113,9 +110,9 @@ Map_offset(Map * m, enum directions dir)
 }
 
 void
-Combat_damage_enemy(Map * m, unsigned int location, int dmg)
+Combat_damage_enemy(Map * m, uint16_t location, int8_t dmg)
 {
-	int id = Enemy_getid(m, location);
+	int16_t id = Enemy_getid(m, location);
 
 	if (id == -1) {
 		/* error, enemy not found */
@@ -130,7 +127,7 @@ Combat_damage_enemy(Map * m, unsigned int location, int dmg)
 }
 
 void
-Combat_damage_player(Map * m, int dmg)
+Combat_damage_player(Map * m, int8_t dmg)
 {
 	/* delete if dead, else subtract from hp */
 	if (m->player.hp <= dmg) {
@@ -143,9 +140,9 @@ Combat_damage_player(Map * m, int dmg)
 void
 Enemy_add(Map * m, Enemy e)
 {
-	int i;
-	unsigned int first_blank = -1;
-	for (i = 0; i < MAX_ENEMIES; i++) {
+	uint8_t first_blank;
+
+	for (uint16_t i = 0; i < MAX_ENEMIES; i++) {
 		/* find first blank spot */
 		if (m->enemies[i].blank == 1) {
 			first_blank = i;
@@ -162,11 +159,11 @@ Enemy_add(Map * m, Enemy e)
 }
 
 int
-Enemy_getid(Map * m, unsigned int location)
+Enemy_getid(Map * m, uint16_t location)
 {
 	/* find id using linear search; if id doesn't exist, return -1 */
-	int i, id = -1;
-	for (i = 0; i < MAX_ENEMIES; i++) {
+	int16_t id = -1;
+	for (uint16_t i = 0; i < MAX_ENEMIES; i++) {
 		if (m->enemies[i].location == location) {
 			id = i;
 			break;
@@ -177,7 +174,7 @@ Enemy_getid(Map * m, unsigned int location)
 }
 
 void
-Enemy_delete(Map * m, unsigned int id)
+Enemy_delete(Map * m, uint8_t id)
 {
 	/* set that enemy to blank */
 	if (id != -1) {
@@ -208,7 +205,7 @@ Enemy_move(Map * m, Enemy e, enum directions dir)
 }
 
 void
-Enemy_status(Enemy e, int id)
+Enemy_status(Enemy e, uint8_t id)
 {
 	printf("tile:%c\t id: %i\t hp: %i\t loc: %i\n",
 			e.tile,

@@ -3,7 +3,7 @@
 int
 main()
 {
-	unsigned int rows, cols;
+	uint8_t rows, cols;
 	/* initialize ncurses stuff */
 	initscr();
 	noecho();
@@ -26,7 +26,7 @@ main()
 	printw(" / | \\			 / | \\\n");
 	printw("1  2  3			b  j  n\n");
 	printw("Other actions:\n");
-	printw("Inventory: i\tExamine: e\n");
+	printw("Inventory: i\tExamine: e\tQuit: q\n");
 	refresh();
 
 	getch();
@@ -65,24 +65,24 @@ game_setup()
 void
 game_loop(Map * m)
 {
-	unsigned int turns = 0;
-	char ch;
+	uint32_t turns = 0;
+	char input;
 
 	while (1)
 	{
-		ch = getch();
-		if (ch == 'q') {
+		input = getch();
+		if (input == 'q') {
 			printw("Are you sure you want to quit? (y/N) ");
 			refresh();
-			ch = getch();
-			refresh();
-			if (ch == 'y' || ch == 'Y') {
+			input = getch();
+			if (input == 'y' || input == 'Y') {
 				return;
 			}
 		} else {
-			interpret_input(m, ch);
+			interpret_input(m, input);
 			clear();
 			Map_draw(m);
+			turns++;
 			printw("Turns: %d\n", turns);
 			refresh();
 		}
@@ -90,17 +90,15 @@ game_loop(Map * m)
 		if (turns % 2 == 0) {
 			Enemy_move(m, m->enemies[0], LEFT);
 		}
-
-		turns++;
 	}
 }
 
 void
-interpret_input(Map * m, char ch)
+interpret_input(Map * m, char input)
 {
 	enum directions dir = IN_PLACE;
 	/* movement */
-	switch (ch) {
+	switch (input) {
 		case 'h':
 			dir = LEFT;
 			break;
@@ -130,15 +128,15 @@ interpret_input(Map * m, char ch)
 	Player_move(m, dir);
 
 	/* inventory */
-	if (ch == 'i') {
+	if (input == 'i') {
 	}
 
 	/* examining something */
-	if (ch == 'e') {
+	if (input == 'e') {
 	}
 
-	/* help */
-	if (ch == KEY_F(1)) {
+	/* show help */
+	if (input == KEY_F(1)) {
 	}
 
 }

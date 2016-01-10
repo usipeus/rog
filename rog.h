@@ -4,6 +4,7 @@
 
 #include <ncurses.h>
 #include <stdio.h>
+#include <stdint.h>
 
 /* game initialization */
 Map *
