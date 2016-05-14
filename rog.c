@@ -272,14 +272,17 @@ Movement_player(Map * map, enum directions dir)
 	}
 
 	/* find what is in the tile to move into */
-	char new_loc = map->map[map->player.location + offset];
+	unsigned int new_loc = map->player.location + offset;
+	char new_tile = map->map[new_loc];
 
-	if (new_loc == '#' || new_loc == ' ') {
-		/* new_loc is a wall or out of bounds: don't move and display message */
-	} else if (new_loc >= 'a' && new_loc - 'a' < 26) {
-		/* new_loc is an enemy: attack */
-	} else if (new_loc >= 'A' && new_loc - 'A' < 26) {
-		/* new_loc is an enemy: attack */
+	if (new_tile == '#' || new_tile == ' ') {
+		/* new_tile is a wall or out of bounds: don't move */
+	} else if (new_tile >= 'a' && new_tile - 'a' < 26) {
+		/* new_tile is an enemy: attack */
+		Combat_damage_enemy(map, new_loc, 2);
+	} else if (new_tile >= 'A' && new_tile - 'A' < 26) {
+		/* new_tile is an enemy: attack */
+		Combat_damage_enemy(map, new_loc, 2);
 	} else {
 		map->player.location += offset;
 	}
