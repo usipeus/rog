@@ -28,6 +28,9 @@ typedef struct {
 	unsigned int blank;
 	unsigned int hp;
 	unsigned int location;
+	unsigned int speed;		/* determines chance to get hit: 1 / (2 + speed) */
+	unsigned int max_hit;	/* max damage possible in 1 hit */
+	unsigned int AC;		/* armor class, determines how easily you are hit */
 	char tile;
 } Enemy;
 
@@ -36,6 +39,8 @@ typedef struct {
 	unsigned int mana;
 	unsigned int location;
 	unsigned int speed;
+	unsigned int max_hit;	/* max damage you can do in 1 hit */
+	unsigned int AC;		/* armor class, determines how easily you are hit */
 } Player;
 
 typedef struct {

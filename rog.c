@@ -1,4 +1,6 @@
 #include "rog.h"
+#include <math.h>
+#include <time.h>
 
 int
 main()
@@ -31,6 +33,9 @@ main()
 
 	getch();
 
+	/* seed rand */
+	srand(time(NULL));
+
 	/* set up and start game */
 	Map * m = game_setup();
 
@@ -53,10 +58,27 @@ main()
 Map *
 game_setup()
 {
-	Player player = {.hp = 10, .mana = 4, .location = 746, .speed = 2};
+	Player player = {
+		.hp = 10,
+		.mana = 4,
+		.location = 746,
+		.speed = 2,
+		.max_hit = 4,
+		.AC = 12,
+	};
+
 	Map * m = Map_create(79, 20, "###############                                                   ##############.............#                                                   #...........##.............#########                                           #...........##.....................#                        ###                #...........##.....................#                       #...#               #...........##.............######..#                       #....##             #...........#########.###########..##########              #.....#             #...........#.........########..............###            #.....#             #...........#.#################...............##############.....###############...........#.#               ##...........................................................#.#                ##.................##############################...........#.#                 ##..................#                          #...........#.#                  #######.############                          #...........#.#                        #.#                                     #...........#.#                        #.#                                     #...........#.#                        #.#                                     #...........#.##########################.#                                     #...........#............................#                                     #...........#............................#                                     #...........################################################################################", player);
 
-	Enemy enemy1 = {.blank = 0, .hp = 4, .location = 708, .tile = 'D'};
+	Enemy enemy1 = {
+		.blank = 0,
+		.hp = 16,
+		.location = 708,
+		.speed = 2,
+		.max_hit = 6,
+		.AC = 14,
+		.tile = 'D'
+	};
+
 	Enemy_add(m, enemy1);
 
 	return m;
@@ -271,20 +293,35 @@ Movement_player(Map * map, enum directions dir)
 			break;
 	}
 
-	/* find what is in the tile to move into */
 	unsigned int new_loc = map->player.location + offset;
-	char new_tile = map->map[new_loc];
 
-	if (new_tile == '#' || new_tile == ' ') {
-		/* new_tile is a wall or out of bounds: don't move */
-	} else if (new_tile >= 'a' && new_tile - 'a' < 26) {
-		/* new_tile is an enemy: attack */
-		Combat_damage_enemy(map, new_loc, 2);
-	} else if (new_tile >= 'A' && new_tile - 'A' < 26) {
-		/* new_tile is an enemy: attack */
-		Combat_damage_enemy(map, new_loc, 2);
-	} else {
-		map->player.location += offset;
+	/* check to see if there are any enemies in the new location; if so, atk */
+	int i, enemy_there = 0;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		if (!(map->enemies[i].blank) && (map->enemies[i].location == new_loc)) {
+			enemy_there = 1;
+
+			/* calculate damage to the enemy */
+			unsigned int hit_roll = rand() % 20 + 1; /* roll 1d20 */
+			if (hit_roll >= map->enemies[i].AC) {
+				Combat_damage_enemy(map, new_loc, 
+					rand() % map->player.max_hit + 1);
+			}
+
+			break;
+		}
+	}
+
+	/* no enemy; try to move */
+	if (!enemy_there) {
+		/* find what is in the tile to move into */
+		char new_tile = map->map[new_loc];
+
+		if (new_tile == '#' || new_tile == ' ') {
+			/* new_tile is a wall or out of bounds: don't move */
+		} else {
+			map->player.location += offset;
+		}
 	}
 }
 
